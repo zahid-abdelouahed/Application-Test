@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Primary
 public class PatientDataBase implements PatientStore {
-    public void savePatient(Patient p){
+    @Override
+    public void save(Patient p){
         System.out.println("patient");
     }
 

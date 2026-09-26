@@ -1,2 +1,6 @@
+### Hello
 GET http://localhost:8080/hello
+
+### Patient
+GET http://localhost:8080/patients
 Accept: application/json
