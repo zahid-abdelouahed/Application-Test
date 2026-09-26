@@ -9,6 +9,7 @@ Dépôt de travail du cours. Il regroupe les TP du cours magistral et les TD à 
       front/    répertoire vide, destiné au projet créé par « ng new » : TP Angular
     td/
       back/     TD : API REST de la bibliothèque de films
+        filmapi/  projet Spring Boot de l'API (TD 1)
         http/   requêtes HTTP, exécutées avec l'extension VSCode REST Client
       front/    TD : front Angular de la bibliothèque de films
 
@@ -47,19 +48,53 @@ cd tp/front
 ng new tp-front      # CSS, sans SSR, « None » pour les outils IA
 ```
 
-### TD
+## TD 1 — API REST de la bibliothèque de films
 
-Le back est généré depuis [start.spring.io](https://start.spring.io) ou depuis l'IDE,
-**dans `td/back`**, avec la dépendance Spring Web. Le front est généré avec `ng new`,
-**dans `td/front`**.
+API REST de gestion de films, stockage en mémoire (tag `td1`).
 
-## Requêtes HTTP
+### Lancement
 
-Ni collection Postman ni collection Bruno : les requêtes sont versionnées dans des fichiers
-`.http` placés dans `td/back/http` et exécutées par l'extension VSCode
-[REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client),
-via l'action *Send Request* affichée au-dessus de chaque requête. Un fichier par ressource,
-requêtes séparées par `###`. `films.http` contient le squelette du TD 1.
+```bash
+cd td/back/filmapi
+./gradlew bootRun
+```
+
+L'API écoute sur `http://localhost:8080`. Les requêtes de test sont dans
+`td/back/http/films.http` (extension REST Client).
+
+> Les films sont stockés en mémoire : ils sont perdus à chaque redémarrage.
+> Lancer d'abord le `POST` avant les autres requêtes.
+
+### Modèle
+
+`Film` : `id` (Long), `titre` (String, obligatoire), `realisateur` (String),
+`dateSortie` (LocalDate), `genre` (énumération `Genre` : `ACTION`, `COMEDY`,
+`DRAMA`, `SCIENCE_FICTION`).
+
+### Architecture
+
+| Couche     | Classe                   | Rôle                                                                               |
+|------------|--------------------------|------------------------------------------------------------------------------------|
+| Controller | `FilmController`         | Expose les endpoints REST (`@RestController`)                                      |
+| Service    | `FilmService`            | Logique métier, lève `FilmNotFoundException` (`@Service`)                          |
+| Repository | `FilmRepository`         | Stockage dans une `Map<Long, Film>`, id généré par un `AtomicLong` (`@Repository`) |
+| Erreurs    | `GlobalExceptionHandler` | `@RestControllerAdvice` qui convertit les exceptions en `ProblemDetail`            |
+
+### Endpoints
+| Méthode  | URL           | Description             | Succès                     | Erreurs      |
+|----------|---------------|-------------------------|----------------------------|--------------|
+| `GET`    | `/films`      | Liste des films         | `200 OK`                   | –            |
+| `GET`    | `/films/{id}` | Un film par identifiant | `200 OK`                   | `404`        |
+| `POST`   | `/films`      | Création d'un film      | `201 Created` + `Location` | `400`        |
+| `PUT`    | `/films/{id}` | Mise à jour d'un film   | `200 OK`                   | `400`, `404` |
+| `DELETE` | `/films/{id}` | Suppression d'un film   | `204 No Content`           | `404`        |
+
+### Gestion des erreurs
+
+Les erreurs sont renvoyées au formation/problem+json`) :
+
+- **404** : film inexistant, via `Fitée par `GlobalExceptionHandler` ;
+- **400** : film invalide (titre absent ou vide), via la validation `@NotBlank` + `@Valid`.
 
 ## Rendus
 
