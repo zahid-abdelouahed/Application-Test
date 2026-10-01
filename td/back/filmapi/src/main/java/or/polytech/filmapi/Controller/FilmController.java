@@ -1,22 +1,22 @@
 package or.polytech.filmapi.Controller;
 
-import java.util.Collection;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import or.polytech.filmapi.Service.FilmService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import jakarta.validation.Valid;
+import or.polytech.filmapi.Mapper.FilmMapper;
+import or.polytech.filmapi.DTO.FilmDto;
+import or.polytech.filmapi.DTO.FilmCreationDto;
 
 @RestController
 @RequestMapping("/films")
 public class FilmController {
 
-    @Autowired
     private final FilmService service;
 
     public FilmController(FilmService service) {
@@ -24,32 +24,31 @@ public class FilmController {
     }
 
     @GetMapping
-    public Collection<FilmDto> films() {
-        return service.getAllFilms();
+    public List<FilmDto> films() {
+        return service.getAllFilms().stream().map(FilmMapper::toDto).toList();
     }
 
     @GetMapping("/{id}")
     public FilmDto getFilmById(@PathVariable Long id) {
-        return service.getFilmById(id);
+        return  FilmMapper.toDto(service.getFilmById(id));
     }
 
-    @PutMapping("/films/{id}")
-    public FilmDto updateFilm(@PathVariable Long id,@Valid @RequestBody Film film) {
-        return service.updateFilm(id, film);
+    @PutMapping("/{id}")
+    public FilmDto updateFilm(@PathVariable Long id,@Valid @RequestBody FilmCreationDto dto) {
+        return FilmMapper.toDto(service.updateFilm(id, FilmMapper.toEntity(dto)));
     }
 
-    @DeleteMapping("/films/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFilm(@PathVariable Long id) {
         service.deleteFilm(id);
     }
     
-    @GetMapping()
-    @PostMapping("/films")
-    public ResponseEntity<FilmDto> addFilm(@Valid @RequestBody Film film) {
-        FilmDto filmCree = service.saveFilm(film);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(FilmCree.getId()).toUri();
-        return ResponseEntity.created(uri).body(FilmCree);
+    @PostMapping
+    public ResponseEntity<FilmDto> addFilm(@Valid @RequestBody FilmCreationDto dto) {
+        FilmDto filmCree = FilmMapper.toDto(service.saveFilm(FilmMapper.toEntity(dto)));
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(filmCree.id()).toUri();
+        return ResponseEntity.created(uri).body(filmCree);
     }
 
 

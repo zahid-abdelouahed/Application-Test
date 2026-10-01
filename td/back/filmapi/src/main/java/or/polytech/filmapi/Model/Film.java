@@ -3,9 +3,6 @@ package or.polytech.filmapi.Model;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-
-import jakarta.validation.constraints.NotBlank;
-
 import or.polytech.filmapi.utils.Genre;
 import jakarta.persistence.*;
 
@@ -30,7 +27,6 @@ public class Film {
 
     public Film() {
     }
-	@NotBlank
     public String getTitre() {
         return titre;
     }   

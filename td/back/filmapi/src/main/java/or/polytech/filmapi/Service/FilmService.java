@@ -1,6 +1,7 @@
 package or.polytech.filmapi.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,8 @@ public class FilmService {
     }
 
     public Film getFilmById(Long id) throws FilmNotFoundException {
-        if (id != null && film != null && filmRepository.existsById(id)) {
-            return filmRepository.findById(id);
+        if (id != null && filmRepository.existsById(id)) {
+            return filmRepository.findById(id).get();
         }
         throw new FilmNotFoundException("aucun film: " + id);
     }
@@ -43,11 +44,12 @@ public class FilmService {
         return filmRepository.findAll();
     }
 
-    public Film updateFilm(Long id, Film film) throws FilmNotFoundException {
-        if (id != null && film != null && filmRepository.existsById(id)) {
-            film.setId(id);
-            return filmRepository.save(film);
-        }
-        throw new FilmNotFoundException("aucun film: " + id);
+    public Film updateFilm(Long id, Film data) throws FilmNotFoundException {
+        Film film = getFilmById(id);
+        film.setTitre(data.getTitre());
+        film.setRealisateur(data.getRealisateur());
+        film.setDateSortie(data.getDateSortie());
+        film.setGenre(data.getGenre());
+        return filmRepository.save(film);
     }
 }

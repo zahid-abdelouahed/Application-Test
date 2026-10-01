@@ -1,17 +1,19 @@
-package or.polytech.filmapi.Controller;
+package or.polytech.filmapi.Mapper;
 
 import or.polytech.filmapi.Model.Film;
+import or.polytech.filmapi.DTO.FilmCreationDto;
+import or.polytech.filmapi.DTO.FilmDto;
 
 public class FilmMapper {
 
     public static FilmDto toDto(Film film) {
         return new FilmDto(
-                film.getId(),
-                film.getTitle(),
-                film.getDirector(),
-                film.getReleaseYear(),
-                film.getGenre()
-        );
+            film.getId(),
+            film.getTitre(),
+            film.getRealisateur(),
+            film.getDateSortie(),
+            film.getGenre()
+       );
     }
 
     public static Film toEntity(FilmCreationDto d) {
