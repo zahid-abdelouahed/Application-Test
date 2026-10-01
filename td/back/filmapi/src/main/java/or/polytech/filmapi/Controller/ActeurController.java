@@ -15,6 +15,8 @@ import or.polytech.filmapi.DTO.FilmDto;
 import or.polytech.filmapi.Mapper.ActeurMapper;
 import or.polytech.filmapi.Mapper.FilmMapper;
 import or.polytech.filmapi.Service.ActeurService;
+import or.polytech.filmapi.Mapper.FilmMapper;
+import or.polytech.filmapi.Mapper.ActeurMapper;
 
 @RestController
 @RequestMapping("/acteurs")

@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import or.polytech.filmapi.Mapper.FilmMapper;
 import or.polytech.filmapi.DTO.FilmDto;
 import or.polytech.filmapi.DTO.FilmCreationDto;
+import or.polytech.filmapi.DTO.FilmDetailDto;
+import or.polytech.filmapi.DTO.ActeurDto;
 
 @RestController
 @RequestMapping("/films")
@@ -29,12 +31,12 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public FilmDto getFilmById(@PathVariable Long id) {
-        return  FilmMapper.toDto(service.getFilmById(id));
+    public FilmDetailDto getFilmById(@PathVariable Long id) {
+        return FilmMapper.toDetailDto(service.getFilmWithActeurs(id));
     }
 
     @PutMapping("/{id}")
-    public FilmDto updateFilm(@PathVariable Long id,@Valid @RequestBody FilmCreationDto dto) {
+    public FilmDto updateFilm(@PathVariable Long id, @Valid @RequestBody FilmCreationDto dto) {
         return FilmMapper.toDto(service.updateFilm(id, FilmMapper.toEntity(dto)));
     }
 
@@ -43,7 +45,7 @@ public class FilmController {
     public void deleteFilm(@PathVariable Long id) {
         service.deleteFilm(id);
     }
-    
+
     @PostMapping
     public ResponseEntity<FilmDto> addFilm(@Valid @RequestBody FilmCreationDto dto) {
         FilmDto filmCree = FilmMapper.toDto(service.saveFilm(FilmMapper.toEntity(dto)));
@@ -51,5 +53,21 @@ public class FilmController {
         return ResponseEntity.created(uri).body(filmCree);
     }
 
+    @GetMapping("/{id}/acteurs")
+    public List<ActeurDto> acteursDuFilm(@PathVariable Long id) {
+        return FilmMapper.toDetailDto(service.getFilmWithActeurs(id)).acteurs();
+    }
+
+    @PostMapping("/{id}/acteurs/{acteurId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ajouterActeur(@PathVariable Long id, @PathVariable Long acteurId) {
+        service.ajouterActeur(id, acteurId);
+    }
+
+    @DeleteMapping("/{id}/acteurs/{acteurId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void retirerActeur(@PathVariable Long id, @PathVariable Long acteurId) {
+        service.retirerActeur(id, acteurId);
+    }
 
 }

@@ -73,7 +73,18 @@ Content-Type: application/json
   ]
 }
 
-### afficher liste des acteurs
-GET http://localhost:8080/acteurs
-Accept: application/json
+### Détail du film 1 (attendu : le film avec ses deux acteurs)
+GET http://localhost:8080/films/1
+
+### Associer l'acteur 3 au film 1 (attendu : 204)
+POST http://localhost:8080/films/1/acteurs/3
+
+### Acteurs du film 1 (attendu : trois acteurs)
+GET http://localhost:8080/films/1/acteurs
+
+### Dissocier (attendu : 204)
+DELETE http://localhost:8080/films/1/acteurs/3
+
+### Film inconnu (attendu : 404 ProblemDetail)
+POST http://localhost:8080/films/9999/acteurs/1
 
