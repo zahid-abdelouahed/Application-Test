@@ -3,51 +3,54 @@ package or.polytech.filmapi.Controller;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import or.polytech.filmapi.Model.Film;
 import or.polytech.filmapi.Service.FilmService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/films")
 public class FilmController {
 
     @Autowired
-    private FilmService filmService;
+    private final FilmService service;
 
-    @GetMapping("/films")
-    public Collection<Film> films() {
-        return filmService.getAllFilms();
+    public FilmController(FilmService service) {
+        this.service = service;
     }
 
-    @GetMapping("/films/{id}")
-    public Film getFilmById(@PathVariable Long id) {
-        return filmService.getFilmById(id);
+    @GetMapping
+    public Collection<FilmDto> films() {
+        return service.getAllFilms();
+    }
+
+    @GetMapping("/{id}")
+    public FilmDto getFilmById(@PathVariable Long id) {
+        return service.getFilmById(id);
     }
 
     @PutMapping("/films/{id}")
-    public Film updateFilm(@PathVariable Long id,@Valid @RequestBody Film film) {
-        return filmService.updateFilm(id, film);
+    public FilmDto updateFilm(@PathVariable Long id,@Valid @RequestBody Film film) {
+        return service.updateFilm(id, film);
     }
 
     @DeleteMapping("/films/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFilm(@PathVariable Long id) {
-        filmService.deleteFilm(id);
+        service.deleteFilm(id);
     }
+    
+    @GetMapping()
     @PostMapping("/films")
-    public ResponseEntity<Film> addFilm(@Valid @RequestBody Film film) {
-        Film FilmCree = filmService.saveFilm(film);
+    public ResponseEntity<FilmDto> addFilm(@Valid @RequestBody Film film) {
+        FilmDto filmCree = service.saveFilm(film);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(FilmCree.getId()).toUri();
         return ResponseEntity.created(uri).body(FilmCree);
     }
+
+
 }

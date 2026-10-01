@@ -11,10 +11,6 @@ public class PatientService {
     }
 
     public void savePatient(Patient patient) {
-        if (patient.getEmail() == null) {
-            throw new IllegalArgumentException("email obligatoire");
-        }
-        System.out.println("PatientService   - validation de " + patient.getEmail());
         store.save(patient);
     }
 }

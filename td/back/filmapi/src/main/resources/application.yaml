@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fimapi-db
+    username: postgres
+    password: ${DB_PASSWORD:motdepasse}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop

@@ -1,0 +1,13 @@
+<div>
+  <p>Id : {{ patient().id }}</p>
+  <p>Nom : {{ patient().nom }}</p>
+  <p>Prénom : {{ patient().prenom }}</p>
+  <p>Email : {{ patient().email }}</p>
+  <p>Date de naissance : {{ patient().datedenaissance }}</p>
+
+  <form #f="ngForm">
+    <p>Nom saisi : {{ nom() }}</p>
+    <input name="nom" [(ngModel)]="nom" required>
+    <button type="button" [disabled]="f.invalid" (click)="effaceNom()">Effacer</button>
+  </form>
+</div>

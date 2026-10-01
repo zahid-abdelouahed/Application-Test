@@ -2,7 +2,6 @@ package or.polytech.filmapi.Service;
 
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import or.polytech.filmapi.Model.Film;
@@ -12,8 +11,11 @@ import or.polytech.filmapi.utils.FilmNotFoundException;
 @Service
 public class FilmService {
 
-    @Autowired
-    private FilmRepository filmRepository;
+    private final FilmRepository filmRepository;
+
+    public FilmService(FilmRepository filmRepository) {
+        this.filmRepository = filmRepository;
+    }
 
     public Film saveFilm(Film film) {
         if (film != null && film.getTitre() != null && !film.getTitre().isBlank()) {
@@ -23,11 +25,10 @@ public class FilmService {
     }
 
     public Film getFilmById(Long id) throws FilmNotFoundException {
-        Film film = filmRepository.findById(id);
-        if (film == null) {
-            throw new FilmNotFoundException("aucun film: " + id);
+        if (id != null && film != null && filmRepository.existsById(id)) {
+            return filmRepository.findById(id);
         }
-        return film;
+        throw new FilmNotFoundException("aucun film: " + id);
     }
 
     public void deleteFilm(Long id) throws FilmNotFoundException {
@@ -39,7 +40,7 @@ public class FilmService {
     }
 
     public Collection<Film> getAllFilms() {
-        return filmRepository.getAllFilms();
+        return filmRepository.findAll();
     }
 
     public Film updateFilm(Long id, Film film) throws FilmNotFoundException {

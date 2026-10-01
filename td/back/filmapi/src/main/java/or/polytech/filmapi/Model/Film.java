@@ -4,13 +4,22 @@ import java.time.LocalDate;
 import jakarta.validation.constraints.NotBlank;
 
 import or.polytech.filmapi.utils.Genre;
+import jakarta.persistence.*;
 
+@Entity
 public class Film {
+    @Column(nullable = false, length = 200)
     private String titre;
     private String realisateur;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate dateSortie;
+    @Enumerated(EnumType.STRING)
     private Genre genre;
+    @ManyToMany(fetch = FetchType.Lazy)
+    @JoinColumn(acteur = "id_acteur")
+    private List<Acteur> acteurs;
 
     public Film() {
     }

@@ -50,17 +50,8 @@ ng new tp-front      # CSS, sans SSR, « None » pour les outils IA
 
 ## TD 1 — API REST de la bibliothèque de films
 
-API REST de gestion de films, stockage en mémoire (tag `td1`).
+API REST de gestion de films, stockage en mémoire.
 
-### Lancement
-
-```bash
-cd td/back/filmapi
-./gradlew bootRun
-```
-
-L'API écoute sur `http://localhost:8080`. Les requêtes de test sont dans
-`td/back/http/films.http` (extension REST Client).
 
 > Les films sont stockés en mémoire : ils sont perdus à chaque redémarrage.
 > Lancer d'abord le `POST` avant les autres requêtes.
@@ -91,9 +82,9 @@ L'API écoute sur `http://localhost:8080`. Les requêtes de test sont dans
 
 ### Gestion des erreurs
 
-Les erreurs sont renvoyées au formation/problem+json`) :
+Les erreurs sont renvoyées au format **ProblemDetail** (`application/problem+json`) :
 
-- **404** : film inexistant, via `Fitée par `GlobalExceptionHandler` ;
+- **404** : film inexistant, via `FilmNotFoundException` interceptée par `GlobalExceptionHandler` ;
 - **400** : film invalide (titre absent ou vide), via la validation `@NotBlank` + `@Valid`.
 
 ## Rendus

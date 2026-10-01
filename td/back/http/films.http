@@ -17,6 +17,17 @@ Content-Type: application/json
   "genre": "SCIENCE_FICTION"
 }
 
+### Création — réponse attendue : 201 Created avec en-tête Location
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{
+  "titre": "Harry Potter",
+  "realisateur": "daniel radcliffe",
+  "dateSortie": "2001-11-16",
+  "genre": "ACTION"
+}
+
 ### Création invalide — réponse attendue : 400 au format ProblemDetail
 POST http://localhost:8080/films
 Content-Type: application/json
@@ -42,3 +53,27 @@ DELETE http://localhost:8080/films/1
 ### Identifiant inconnu — réponse attendue : 404 au format ProblemDetail
 GET http://localhost:8080/films/9999
 Accept: application/json
+
+### Ajouter des acteur à un film
+POST http://localhost:8080/films/1/acteurs
+Content-Type: application/json
+
+{
+  "acteurs": [
+    {
+      "nom": "Zahid",
+      "prenom": "Abdel",
+      "dateNaissance": "2003-01-01"
+    },
+    {
+      "nom": "Harry",
+      "prenom": "Potter",
+      "dateNaissance": "1980-07-31"
+    }
+  ]
+}
+
+### afficher liste des acteurs
+GET http://localhost:8080/acteurs
+Accept: application/json
+
