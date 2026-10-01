@@ -12,11 +12,14 @@ import or.polytech.filmapi.Model.Film;
 @Repository
 public interface FilmRepository extends JpaRepository<Film, Long> {
     List<Film> findByActeursId(Long acteurId);
+
+    @Query("select f from Film f join f.acteurs a where a.id = :acteurId")
+    List<Film> findFilmsDeLActeur(Long acteurId);
+
     @Query("""
             select f from Film f
             left join fetch f.acteurs
-            where f.id = :acteurId
+            where f.id = :id
             """)
     Optional<Film> findByIdWithActeur(Long id);
 }
-
