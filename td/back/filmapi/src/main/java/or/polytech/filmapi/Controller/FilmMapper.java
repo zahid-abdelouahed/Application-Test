@@ -16,10 +16,10 @@ public class FilmMapper {
 
     public static Film toEntity(FilmCreationDto d) {
         Film f = new Film();
-        f.setTitre(f.titre());
-        f.setRealisateur(f.realisateur());
-        f.setDateSortie(f.DateSortie());
-        f.setGenre(f.Genre());
+        f.setTitre(d.titre());
+        f.setRealisateur(d.realisateur());
+        f.setDateSortie(d.dateSortie());
+        f.setGenre(d.genre());
         return f;
     }
 
