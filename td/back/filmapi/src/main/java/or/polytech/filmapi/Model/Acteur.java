@@ -48,19 +48,11 @@ public class Acteur {
         return films;
     }
 
-    public void setFilms(Set<Film> films) {
-        this.films = films;
-    }
-
     public LocalDate getDateNaissance() {
         return dateNaissance;
     }
 
     public void setDateNaissance(LocalDate dateNaissance) {
         this.dateNaissance = dateNaissance;
-    }
-
-    public Set<Film> getFilmsSet() {
-        return films;
     }
 }

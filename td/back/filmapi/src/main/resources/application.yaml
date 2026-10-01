@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/fimapi-db
     username: postgres
-    password: ${DB_PASSWORD:motdepasse}
+    password: ${DB_PASSWORD:Zahid2003}
   jpa:
     show-sql: true
     defer-datasource-initialization: true
