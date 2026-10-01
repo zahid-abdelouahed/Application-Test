@@ -1,10 +1,15 @@
 package or.polytech.filmapi.Model;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.validation.constraints.NotBlank;
 
 import or.polytech.filmapi.utils.Genre;
 import jakarta.persistence.*;
+
+
 
 @Entity
 public class Film {
@@ -17,9 +22,11 @@ public class Film {
     private LocalDate dateSortie;
     @Enumerated(EnumType.STRING)
     private Genre genre;
-    @ManyToMany(fetch = FetchType.Lazy)
-    @JoinColumn(acteur = "id_acteur")
-    private List<Acteur> acteurs;
+    @ManyToMany
+    @JoinTable(name = "film_acteur",
+    joinColumns = @JoinColumn(name = "film_id"),
+    inverseJoinColumns = @JoinColumn(name = "acteur_id"))
+    private Set<Acteur> acteurs = new HashSet<>();
 
     public Film() {
     }
@@ -62,6 +69,10 @@ public class Film {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    public Set<Acteur> getActeurs() {
+        return acteurs;
     }
 
 }

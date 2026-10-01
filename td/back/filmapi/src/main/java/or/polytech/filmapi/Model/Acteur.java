@@ -1,6 +1,9 @@
 package or.polytech.filmapi.Model;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -11,8 +14,8 @@ public class Acteur {
     private String nom;
     private String prenom;
     private LocalDate dateNaissance;
-    @ManyToMany
-    private List<Film> films;  
+    @ManyToMany(mappedBy = "acteurs")
+    private Set<Film> films = new HashSet<>(); 
 
     public Acteur() {
     }   
@@ -57,4 +60,7 @@ public class Acteur {
         this.dateNaissance = dateNaissance;
     }
 
+    public Set<Film> getFilmsSet() {
+        return films;
+    }
 }
