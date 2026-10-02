@@ -5,13 +5,25 @@ Dépôt de travail du cours. Il regroupe les TP du cours magistral et les TD à 
 ## Structure
 
     tp/
-      back/     projet Gradle + Spring Boot préconfiguré : TP Java / Spring
-      front/    répertoire vide, destiné au projet créé par « ng new » : TP Angular
+      back/                 TP Java / Spring (projet Gradle + Spring Boot)
+      front/patients-app/   TP Angular
     td/
-      back/     TD : API REST de la bibliothèque de films
-        filmapi/  projet Spring Boot de l'API (TD 1)
-        http/   requêtes HTTP, exécutées avec l'extension VSCode REST Client
-      front/    TD : front Angular de la bibliothèque de films
+      back/
+        filmapi/            API REST de la bibliothèque de films (TD 1 et TD 2)
+          src/main/java/or/polytech/filmapi/
+            Controller/     endpoints REST
+            Service/        logique métier
+            Repository/     accès aux données (Spring Data JPA)
+            Model/          entités Film et Acteur
+            DTO/            objets échangés avec le client
+            Mapper/         conversion entité / DTO
+            Config/         configuration CORS
+            utils/          exceptions, gestion des erreurs, énumération Genre
+          src/main/resources/
+            application.yaml  connexion PostgreSQL et JPA
+            data.sql          jeu de données chargé au démarrage
+        http/               requêtes HTTP (extension VSCode REST Client)
+      front/                front Angular de la bibliothèque de films (TD 3)
 
 L'ouverture du dossier racine dans VSCode déclenche la proposition des extensions
 recommandées.
@@ -86,6 +98,52 @@ Les erreurs sont renvoyées au format **ProblemDetail** (`application/problem+js
 
 - **404** : film inexistant, via `FilmNotFoundException` interceptée par `GlobalExceptionHandler` ;
 - **400** : film invalide (titre absent ou vide), via la validation `@NotBlank` + `@Valid`.
+
+## TD 2 — Persistance JPA, DTO, CORS
+
+L'API du TD 1 est branchée sur PostgreSQL. Une entité `Acteur` est ajoutée, liée à `Film`
+par une relation ManyToMany.
+
+### Lancement
+
+Prérequis : PostgreSQL sur `localhost:5432` et une base `fimapi-db`.
+
+```bash
+export DB_PASSWORD='mot_de_passe_postgres'
+cd td/back/filmapi
+./gradlew bootRun
+```
+
+Les tables sont recréées à chaque démarrage (`ddl-auto: create-drop`) et remplies par
+`data.sql` (5 films, 5 acteurs). Les requêtes de test sont dans `td/back/http/`.
+
+### Choix techniques
+
+- **DTO** : le contrôleur n'expose aucune entité. `FilmDto` sert à la liste, `FilmDetailDto`
+  (avec les acteurs) au détail, `FilmCreationDto` et `ActeurCreationDto` à la création.
+- **Relation** : `Film` est le côté propriétaire (`@JoinTable`), `Acteur` le côté inverse
+  (`mappedBy`). Les associations se modifient donc à partir du film.
+- **Requêtes personnalisées** : films d'un acteur et acteurs d'un film, écrites par
+  convention de nommage puis avec `@Query`.
+- **CORS** : seule l'origine `http://localhost:4200` est autorisée (`CorsConfig`).
+- **Erreurs** : `404` et `400` au format ProblemDetail, pour les films comme pour les acteurs.
+
+### Nouveaux endpoints
+
+Les endpoints films du TD 1 sont conservés ; `GET /films/{id}` renvoie maintenant le film
+avec ses acteurs.
+
+| Méthode  | URL                              | Description                | Succès                     | Erreurs      |
+|----------|----------------------------------|----------------------------|----------------------------|--------------|
+| `GET`    | `/films/{id}/acteurs`            | Acteurs d'un film          | `200 OK`                   | `404`        |
+| `POST`   | `/films/{id}/acteurs/{acteurId}` | Associe un acteur au film  | `204 No Content`           | `404`        |
+| `DELETE` | `/films/{id}/acteurs/{acteurId}` | Dissocie un acteur du film | `204 No Content`           | `404`        |
+| `GET`    | `/acteurs`                       | Liste des acteurs          | `200 OK`                   | –            |
+| `GET`    | `/acteurs/{id}`                  | Détail d'un acteur         | `200 OK`                   | `404`        |
+| `POST`   | `/acteurs`                       | Création d'un acteur       | `201 Created` + `Location` | `400`        |
+| `PUT`    | `/acteurs/{id}`                  | Mise à jour d'un acteur    | `200 OK`                   | `400`, `404` |
+| `DELETE` | `/acteurs/{id}`                  | Suppression d'un acteur    | `204 No Content`           | `404`        |
+| `GET`    | `/acteurs/{id}/films`            | Films d'un acteur          | `200 OK`                   | `404`        |
 
 ## Rendus
 
