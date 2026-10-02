@@ -88,3 +88,49 @@ DELETE http://localhost:8080/films/1/acteurs/3
 ### Film inconnu (attendu : 404 ProblemDetail)
 POST http://localhost:8080/films/9999/acteurs/1
 
+### Liste des acteurs
+GET http://localhost:8080/acteurs
+
+### Détail d'un acteur
+GET http://localhost:8080/acteurs/1
+
+### Création — attendu : 201 avec Location
+POST http://localhost:8080/acteurs
+Content-Type: application/json
+
+{
+  "nom": "Ford",
+  "prenom": "Harrison",
+  "dateNaissance": "1942-07-13"
+}
+
+### Création invalide — attendu : 400 ProblemDetail
+POST http://localhost:8080/acteurs
+Content-Type: application/json
+
+{
+  "prenom": "Sans nom"
+}
+
+### Mise à jour
+PUT http://localhost:8080/acteurs/1
+Content-Type: application/json
+
+{
+  "nom": "Dupont",
+  "prenom": "Jean-Marc",
+  "dateNaissance": "1980-05-15"
+}
+
+### Films d'un acteur
+GET http://localhost:8080/acteurs/1/f
+
+### Suppression — attendu : 204
+DELETE http://localhost:8080/acteurs/5
+
+### Acteur inconnu — attendu : 404 ProblemDetail
+GET http://localhost:8080/acteurs/999
+
+### Détail d'un acteur
+
+GET http://localhost:8080/acteurs/5
