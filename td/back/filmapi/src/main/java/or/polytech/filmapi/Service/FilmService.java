@@ -5,7 +5,6 @@ import or.polytech.filmapi.Model.Film;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import or.polytech.filmapi.Model.Acteur;
-import or.polytech.filmapi.Model.Film;
 import or.polytech.filmapi.Repository.FilmRepository;
 import or.polytech.filmapi.utils.FilmNotFoundException;
 import or.polytech.filmapi.utils.ActeurNotFoundException;
@@ -23,11 +22,9 @@ public class FilmService {
     }
 
     public Film saveFilm(Film film) {
-        if (film != null && film.getTitre() != null && !film.getTitre().isBlank()) {
             return filmRepository.save(film);
         }
-        return null;
-    }
+    
 
     public Film getFilmById(Long id) throws FilmNotFoundException {
         if (id != null && filmRepository.existsById(id)) {

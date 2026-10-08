@@ -123,7 +123,7 @@ Content-Type: application/json
 }
 
 ### Films d'un acteur
-GET http://localhost:8080/acteurs/1/f
+GET http://localhost:8080/acteurs/1/films
 
 ### Suppression — attendu : 204
 DELETE http://localhost:8080/acteurs/5
