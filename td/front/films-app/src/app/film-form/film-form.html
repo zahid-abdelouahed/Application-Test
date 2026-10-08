@@ -1,1 +1,26 @@
-<p>film-form works!</p>
+<h2>{{id()? 'Modifier le film' : 'Nouveau film'}}</h2>
+
+@if(erreur()){
+    <p class="erreur">{{erreur()}}</p>
+}
+
+<form #formulaire = "ngForm" (ngSubmit)="enregistrer()">
+    <label for="titre">Titre</label>
+    <input type="text" name="titre" id="titre" [(ngModel)]="titre" required>
+
+    <label for="realisateur">Réalisateur</label>
+    <input type="text" name="realisateur" id="realisateur" [(ngModel)]="realisateur" required>
+
+    <label for="genre">Genre</label>
+    <select name="genre" [(ngModel)]="genre" required>
+        @for (g of genres; track g) {
+        <option [ngValue]="g">{{ g }}</option>
+      }
+    </select>
+
+    <label for="dateSortie">Date de sortie</label>
+    <input type="date" name="dateSortie" id="dateSortie" [(ngModel)]="datedesortie">
+
+    <button type="submit" [disabled]="formulaire.invalid">Enregistrer</button>
+    <a routerLink="/films">Annuler</a>
+</form>
