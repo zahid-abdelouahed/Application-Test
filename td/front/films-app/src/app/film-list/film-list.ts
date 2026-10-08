@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { Film } from '../models/film.model';
 
 @Component({
   imports: [],
@@ -6,4 +7,16 @@ import { Component } from '@angular/core';
   styleUrl: './film-list.css',
   templateUrl: './film-list.html',
 })
-export class FilmList {}
+export class FilmList {
+  films = signal<Film[]>([]);
+  chargement = signal(true);
+  erreur = signal<string | null>(null);
+
+  ngOnInit() {
+    this.charger()
+  }
+
+  charger() {
+    this.erreur.set(null);
+  }
+}

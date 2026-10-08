@@ -1,1 +1,18 @@
-<p>film-list works!</p>
+<h2>Films</h2>
+<p><a routerLink="/films/nouveau">Ajouter un film</a></p>
+
+@if(erreur()){
+  <p class="erreur">{{erreur()}}</p>
+} @else if(chargement()) {
+  <p>Chargement en cours...</p>
+} @else {
+  <ul>
+    @for(fof films(); track f.id) {
+      <li>
+        <a routerLink="/films/{{'/films',f.id}}">{{f.titre}}</a>
+      </li>
+    }@empty {
+      <li>Aucun film trouvé</li>
+    }
+  </ul>
+}
