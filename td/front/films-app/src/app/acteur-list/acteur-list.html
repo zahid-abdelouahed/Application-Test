@@ -1,1 +1,15 @@
-<p>acteur-list works!</p>
+<h2>Acteurs</h2>
+
+@if (erreur()) {
+    <p class="erreur">{{erreur()}}</p>
+} @else {
+   <ul>
+    @for(a of acteurs()??[]; track a.id){
+        <li><a [routerLink] = "['/acteurs', a.id]">{{a.nom}} {{a.prenom}}</a></li>
+    } @empty {
+        <li>
+            Aucun Acteur enregistre
+        </li>
+    }
+   </ul>
+}
