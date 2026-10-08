@@ -6,8 +6,8 @@ export const genres: Genre[] = ['ACTION', 'COMEDY', 'DRAMA', 'SCIENCE_FICTION', 
 export interface Film{
     id:number;
     titre:string;
-    dateSortie:Date | null;
+    dateSortie:string | null;
     genre:Genre;
     realisateur:string;
-    acteurs: Acteur[];
+    acteurs?: Acteur[];
 }
