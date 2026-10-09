@@ -9,7 +9,7 @@ Dépôt de travail du cours. Il regroupe les TP du cours magistral et les TD à 
       front/patients-app/   TP Angular
     td/
       back/
-        filmapi/            API REST de la bibliothèque de films (TD 1 et TD 2)
+        filmapi/            API REST de la bibliothèque de films
           src/main/java/or/polytech/filmapi/
             Controller/     endpoints REST
             Service/        logique métier
@@ -23,10 +23,20 @@ Dépôt de travail du cours. Il regroupe les TP du cours magistral et les TD à 
             application.yaml  connexion PostgreSQL et JPA
             data.sql          jeu de données chargé au démarrage
         http/               requêtes HTTP (extension VSCode REST Client)
-      front/                front Angular de la bibliothèque de films (TD 3)
+      front/
+        films-app/          front Angular de la bibliothèque de films
+          src/
+            proxy.conf.json   relais des appels /api vers le back (port 8080)
+            styles.css        style global
+            app/
+              Components/     composants : film-list, film-card, film-detail, film-form,
+                              acteur-list, acteur-detail, not-found
+              models/         interfaces Film et Acteur, calquées sur les DTO
+              services/       FilmService et ActeurService (appels HTTP)
+              app.routes.ts   table de routage
+              app.config.ts   providers : router et client HTTP
+              app.html        menu principal et <router-outlet />
 
-L'ouverture du dossier racine dans VSCode déclenche la proposition des extensions
-recommandées.
 
 ## Récupération du dépôt
 
@@ -145,6 +155,111 @@ avec ses acteurs.
 | `DELETE` | `/acteurs/{id}`                  | Suppression d'un acteur    | `204 No Content`           | `404`        |
 | `GET`    | `/acteurs/{id}/films`            | Films d'un acteur          | `200 OK`                   | `404`        |
 
+## TD 3 — Front Angular de la bibliothèque de films
+
+Application Angular qui consomme l'API : consultation, création, modification et
+suppression des films, consultation des acteurs, association et dissociation d'un acteur
+à un film.
+
+### Démarrer le projet
+
+#### Prérequis
+
+| Outil       | Version              |
+|-------------|----------------------|
+| PostgreSQL  | sur `localhost:5432` |
+| Node.js     | 24 (npm inclus)      |
+| Angular CLI | 22                   |
+
+#### 1. Récupérer le dépôt
+
+```bash
+git clone https://github.com/zahid-abdelouahed/Application-Test.git
+cd Application-Test
+```
+
+#### 2. Créeation de la base de données
+
+```bash
+psql -U postgres -c 'CREATE DATABASE "fimapi-db";'
+```
+
+L'API se connecte avec l'utilisateur `postgres`. Les tables sont créées et remplies
+automatiquement à chaque démarrage avec (`data.sql`).
+
+#### 3. Démarrer le back — terminal 1
+
+```bash
+export DB_PASSWORD='motdepassede-labasededonnees-cree'
+cd td/back/filmapi
+./gradlew bootRun   
+```
+
+#### 4. Démarrer le front — terminal 2
+
+```bash
+cd td/front/films-app
+ng serve
+```
+#### 5. Utiliser l'application
+
+Ouvrir `http://localhost:4200`. Le menu donne accès aux films et aux acteurs.
+
+### Branchement front / back
+
+Le front appelle des URL relatives en `/api/...`. Le serveur de développement Angular les
+relaie vers `http://localhost:8080` grâce à `src/proxy.conf.json` (déclaré dans
+`angular.json`), en retirant le préfixe `/api` : `/api/films` devient `/films` côté Spring.
+Le navigateur ne voit donc qu'une seule origine. Le proxy n'est lu qu'au démarrage de
+`ng serve`.
+
+### Routes
+
+| URL                   | Composant      | Rôle                            |
+|-----------------------|----------------|---------------------------------|
+| `/films`              | `FilmList`     | Liste des films                 |
+| `/films/nouveau`      | `FilmForm`     | Création                        |
+| `/films/:id/modifier` | `FilmForm`     | Modification                    |
+| `/films/:id`          | `FilmDetail`   | Détail, acteurs, liens          |
+| `/acteurs`            | `ActeurList`   | Liste des acteurs               |
+| `/acteurs/:id`        | `ActeurDetail` | Détail d'un acteur et ses films |
+| `**`                  | `NotFound`     | Page introuvable                |
+
+`/` redirige vers `/films`. `films/nouveau` est déclarée avant `films/:id` pour ne pas être
+prise pour un identifiant.
+
+### Choix techniques
+
+- **Communication** : `FilmCard` reçoit le film par `input.required<Film>()` et émet
+  `supprimer` par `output<Film>()`. C'est `FilmList` qui demande confirmation et appelle
+  le service : la carte n'appelle jamais l'API.
+- **Lectures** : consommées avec `toSignal`, donc sans `subscribe` manuel ni désabonnement.
+- **Écritures** (POST, PUT, DELETE) : `subscribe` avec les callbacks `next` et `error`.
+- **Erreurs** : chaque composant a un signal `erreur` affiché dans le template. Les
+  lectures utilisent `catchError` avec une valeur de repli (liste vide ou `null`) : API
+  éteinte, l'application affiche un message au lieu de rester bloquée.
+- **Mise en forme** : les films sortis avant 2000 reçoivent la classe `ancien` via
+  `ngClass`, les dates sont affichées en `dd/MM/yyyy` avec `DatePipe`.
+- **Recherche**  : champ de recherche dans la liste des films, filtrage local
+  par titre avec un `computed`.
+- **Interface `FilmSaisie`** : équivalent front de `FilmCreationD
+- **`toObservable`** : fait l'inverse de `toSignal` : il transforme un signal en
+  Observable, qui émet à chaque changement du signal. L'option `initialValue` de
+  `toSignal` évite la valeur `undefined` avant la première réponse.
+- **`switchMap`** : à chaque nouvelle valeur émise, lance une nouvelle requête et
+  abandonne la précédente.
+- **Signal `version`** : `toSignal` ne s'abonne qu'une fois, donc le `GET` n'est envoyé
+  qu'une fois. `version` est un simple compteur (`signal(0)`) qui sert de déclencheur :
+  après une suppression, une association ou une dissociation, on l'incrémente
+  (`version.update(v => v + 1)`) pour demander une nouvelle lecture. Sa valeur n'est
+  jamais affichée, seul son changement compte.
+- **Signal `source`** (`FilmDetail`) : le film doit être rechargé dans deux cas, quand
+  l'`id` de la route change et quand `version` est incrémenté. `source` est un `computed`
+  qui regroupe les deux dans un seul objet : `{ id: filmId(), version: version() }`.
+  Dès que l'un des deux change, `source` produit un nouvel objet.
+- **`confirm()`** : boîte de dialogue native du navigateur, affichée avant toute
+  suppression.
+
 ## Rendus
 
 | Tag   | Contenu                                        |
@@ -155,3 +270,7 @@ avec ses acteurs.
 
 La régularité et la lisibilité des commits ainsi que la mise à jour du `README.md` sont
 prises en compte dans l'évaluation.
+to`, sans `id` ni
+  `acteurs`, utilisée pour le POST et le PUT à la place de `Partial<Film>`.
+
+### Notions utilisées
