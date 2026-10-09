@@ -1,8 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Film } from '../../models/film.model';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError } from 'rxjs/internal/operators/catchError';
-import { Observable, of } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { FilmService } from '../../services/film.service';
 import { RouterLink } from '@angular/router';
 import { FilmCard } from '../film-card/film-card';
@@ -22,13 +22,15 @@ export class FilmList {
 
 
 
-  films = toSignal<Film[]>(
-    ((this.service.getAll() as Observable<Film[]> | undefined) ?? of([] as Film[])).pipe(
+  films = toSignal(
+    toObservable(this.version).pipe(
+    switchMap(() => this.service.getAll().pipe(
       catchError(() => {
         this.erreur.set('Impossible de charger les films');
         return of([] as Film[]);
       }),
-    ),
+    )),
+  ),
   );
   
   //filmsFilter = signal<Film[]>([]);
