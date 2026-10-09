@@ -243,6 +243,9 @@ prise pour un identifiant.
 - **Recherche**  : champ de recherche dans la liste des films, filtrage local
   par titre avec un `computed`.
 - **Interface `FilmSaisie`** : équivalent front de `FilmCreationD
+
+### Notions utilisés
+
 - **`toObservable`** : fait l'inverse de `toSignal` : il transforme un signal en
   Observable, qui émet à chaque changement du signal. L'option `initialValue` de
   `toSignal` évite la valeur `undefined` avant la première réponse.
