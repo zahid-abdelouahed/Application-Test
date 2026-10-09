@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Film } from '../../models/film.model';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError } from 'rxjs/internal/operators/catchError';
-import { Observable, of, switchMap } from 'rxjs';
+import {  of, switchMap } from 'rxjs';
 import { FilmService } from '../../services/film.service';
 import { RouterLink } from '@angular/router';
 import { FilmCard } from '../film-card/film-card';
@@ -39,7 +39,7 @@ export class FilmList {
   // const valeur = this.recherche().toLowerCase().trim();
   //  const   filmfiltrer =this.films()?.filter((film) => film.titre.toLowerCase().includes(valeur)) ?? [];
   // this.filmsFilter.set(filmfiltrer);
-  //}
+  //} 
 
   filmsFilter = computed(()=>{
     const valeur = this.recherche().toLowerCase().trim();
