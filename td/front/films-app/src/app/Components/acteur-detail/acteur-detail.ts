@@ -1,9 +1,9 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ActeurService } from '../services/acteur.service';
+import { ActeurService } from '../../services/acteur.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of, switchMap } from 'rxjs';
-import { Film } from '../models/film.model';
+import { Film } from '../../models/film.model';
 import { DatePipe } from '@angular/common';
 
 @Component({

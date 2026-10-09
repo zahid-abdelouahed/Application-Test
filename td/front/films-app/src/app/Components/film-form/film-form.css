@@ -1,0 +1,27 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 400px;
+}
+
+label {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+input,
+select {
+  padding: 0.4rem;
+  border: 1px solid #888;
+  border-radius: 4px;
+}
+
+input.ng-invalid.ng-touched {
+  border-color: #c01c28;
+}
+
+button {
+  margin-top: 1rem;
+  align-self: flex-start;
+}

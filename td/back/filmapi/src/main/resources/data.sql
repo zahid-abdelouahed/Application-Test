@@ -4,6 +4,7 @@ INSERT INTO acteur (nom, prenom, date_naissance) VALUES ('Martin', 'Marie', '198
 INSERT INTO acteur (nom, prenom, date_naissance) VALUES ('Bernard', 'Pierre', '1978-07-10');
 INSERT INTO acteur (nom, prenom, date_naissance) VALUES ('Dubois', 'Sophie', '1990-11-08');
 INSERT INTO acteur (nom, prenom, date_naissance) VALUES ('Laurent', 'Thomas', '1982-01-25');
+INSERT INTO acteur (nom, prenom, date_naissance) VALUES ('Zahid', 'Abdel', '2003-01-25');
 
 -- Insert into Film table
 INSERT INTO film (titre, realisateur, date_sortie, genre) VALUES ('Inception', 'Christopher Nolan', '2010-07-16', 'SCIENCE_FICTION');

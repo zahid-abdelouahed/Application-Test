@@ -1,0 +1,19 @@
+<h2>Films</h2>
+<p><a routerLink="/films/nouveau">Ajouter un film</a></p>
+<input type="text" [(ngModel)] ="recherche" placeholder="chercher un film" #filter >
+ 
+@if (erreur()) {
+  <p class="erreur">{{ erreur() }}</p>
+} 
+@if (films(); as liste) {
+  @if (filmsFilter(); as liste) {
+  @for (f of liste; track f.id) {
+    <app-film-card [film]="f" (supprimer)="onSupprimer($event)" />
+  }@empty {
+    @if (!erreur()) {
+      <p>Aucun film enregistré.</p>
+    }
+  }}
+}@else {
+  <p>Chargement en cours</p>
+}

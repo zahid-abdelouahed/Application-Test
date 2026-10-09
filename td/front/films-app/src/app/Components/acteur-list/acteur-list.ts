@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActeurService } from '../services/acteur.service';
+import { ActeurService } from '../../services/acteur.service';
 import { catchError, of } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Acteur } from '../models/acteur.model';
+import { Acteur } from '../../models/acteur.model';
 import { RouterLink } from '@angular/router';
 
 @Component({

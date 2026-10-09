@@ -1,0 +1,21 @@
+ul {
+  padding-left: 1.2rem;
+}
+
+li {
+  margin-bottom: 0.4rem;
+}
+
+li button,
+select {
+  margin-left: 0.5rem;
+}
+
+select {
+  padding: 0.3rem;
+  margin-right: 0.5rem;
+}
+
+a + button {
+  margin-left: 0.75rem;
+}

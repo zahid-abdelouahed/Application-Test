@@ -1,5 +1,5 @@
 import { Component, computed, input, output } from '@angular/core';
-import { Film } from '../models/film.model';
+import { Film } from '../../models/film.model';
 import { RouterLink } from '@angular/router';
 import { DatePipe, NgClass } from '@angular/common';
 

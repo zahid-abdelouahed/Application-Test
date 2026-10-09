@@ -1,7 +1,7 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FilmSaisie, FilmService } from '../services/film.service';
-import { Genre, genres } from '../models/film.model';
+import { FilmSaisie, FilmService } from '../../services/film.service';
+import { Genre, genres } from '../../models/film.model';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 

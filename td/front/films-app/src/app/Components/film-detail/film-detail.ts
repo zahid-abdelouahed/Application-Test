@@ -1,11 +1,11 @@
 import { Component, signal, input, inject, computed } from '@angular/core';
-import { Film } from '../models/film.model';
+import { Film } from '../../models/film.model';
 import { Router, RouterLink } from '@angular/router';
-import { FilmService } from '../services/film.service';
+import { FilmService } from '../../services/film.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of, switchMap } from 'rxjs';
-import { ActeurService } from '../services/acteur.service';
-import { Acteur } from '../models/acteur.model';
+import { ActeurService } from '../../services/acteur.service';
+import { Acteur } from '../../models/acteur.model';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 @Component({
