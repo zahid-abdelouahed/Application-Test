@@ -3,14 +3,13 @@
 
 @if (erreur()) {
   <p class="erreur">{{ erreur() }}</p>
-} @else if (!films()) {
+} 
+@if (films(); as liste) {
+  @for (f of liste; track f.id) {
+    <app-film-card [film]="f" (supprimer)="onSupprimer($event)" />
+  }@empty {
+    <p>Aucun film enregistré.</p>
+  }
+}@else {
   <p>Chargement en cours</p>
-} @else {
-  <ul>
-    @for (f of films() ?? []; track f.id) {
-      <li><a [routerLink]="['/films', f.id]">{{ f.titre }}</a></li>
-    } @empty {
-      <li>Aucun film enregistré.</li>
-    }
-  </ul>
 }
